@@ -113,22 +113,11 @@ public class ArbreBinaire<Cle extends ICle> implements IArbreBinaire<Cle>{
 			return true;
 		
 		return false;
-	}
-	
-	public int hauteur() {
-		int hauteur=0;
-		IArbreBinaire<Cle> parcours = this;
-		while(parcours.ag()!=null) {
-			parcours=parcours.ag();
-			hauteur++;
-		}
-		return hauteur;
-	}
-	
+	}	
 	
 	public IArbreBinaire<Cle> derniereCle(){
 		IArbreBinaire<Cle> place=this;
-		int n=(int)Math.Floor(Math.log(this.cles())/Math.log(2));
+		int n=(int)Math.floor(Math.log(this.cles())/Math.log(2));
 		int i=n;
 		int clestmp=cles;
 		
@@ -223,7 +212,7 @@ public class ArbreBinaire<Cle extends ICle> implements IArbreBinaire<Cle>{
 		
 		IArbreBinaire<Cle> a;
 		for(IArbreBinaire<Cle> liste)
-			;
+			while();
 		
 		int d=(int) Math.floor(Math.log(n)/Math.log(2));
 		

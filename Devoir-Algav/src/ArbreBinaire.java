@@ -209,6 +209,10 @@ public class ArbreBinaire<Cle extends ICle> implements IArbreBinaire<Cle>{
 	}
 	
 	public void consIter(ArrayList<Cle> liste) {
+		int n=liste.size();
+		int d=(int) Math.floor(Math.log(n)/Math.log(2));
+		//int r=n-(int)Math.pow(2, d);
+		
 		ArrayList<IArbreBinaire<Cle>> arbres=new ArrayList<IArbreBinaire<Cle>>();
 		ArrayList<IArbreBinaire<Cle>> priorite=new ArrayList<IArbreBinaire<Cle>>();
 		IArbreBinaire<Cle> a, g, d;
@@ -230,9 +234,6 @@ public class ArbreBinaire<Cle extends ICle> implements IArbreBinaire<Cle>{
 			a=priorite.remove(0); 
 			// on obtient le fils gauche normalement, à vérifier
 		}
-		
-		
-		
 	}
 	
 	public void swap(IArbreBinaire<Cle> a, IArbreBinaire<Cle> b) {

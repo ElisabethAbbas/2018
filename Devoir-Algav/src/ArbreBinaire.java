@@ -153,11 +153,14 @@ public class ArbreBinaire<Cle extends ICle> implements IArbreBinaire<Cle>{
 		return true;
 	}
 	
-	public void tri(IArbreBinaire<Cle> a){
+	public void triEnRemontant(IArbreBinaire<Cle> a) {
 		while(a.pere()!=null && a.pere().cle().compareTo(a.cle())>0) {
 			swap(a.pere(), a);
 			a=a.pere();
 		}
+	}
+	
+	public void triEnDescendant(IArbreBinaire<Cle> a) {
 		while(a.aFilsGauche()) {
 			if(a.ag().cle().compareTo(a.ad().cle())>0) {
 				swap(a.ag(), a);
@@ -171,6 +174,11 @@ public class ArbreBinaire<Cle extends ICle> implements IArbreBinaire<Cle>{
 				break;
 			}
 		}
+	}
+	
+	public void tri(IArbreBinaire<Cle> a){
+		triEnRemontant(a);
+		triEnDescendant(a);
 	}
 	
 	public IArbreBinaire<Cle> place(){
@@ -210,12 +218,11 @@ public class ArbreBinaire<Cle extends ICle> implements IArbreBinaire<Cle>{
 	
 	public void consIter(ArrayList<Cle> liste) {
 		int n=liste.size();
-		int d=(int) Math.floor(Math.log(n)/Math.log(2));
-		//int r=n-(int)Math.pow(2, d);
+		int h=(int) Math.floor(Math.log(n)/Math.log(2));		
 		
 		ArrayList<IArbreBinaire<Cle>> arbres=new ArrayList<IArbreBinaire<Cle>>();
 		ArrayList<IArbreBinaire<Cle>> priorite=new ArrayList<IArbreBinaire<Cle>>();
-		IArbreBinaire<Cle> a, g, d;
+		IArbreBinaire<Cle> a, g, d, tmp;
 		
 		for(Cle c : liste) {
 			a= new ArbreBinaire<Cle>(null, null, c, null);
@@ -234,6 +241,13 @@ public class ArbreBinaire<Cle extends ICle> implements IArbreBinaire<Cle>{
 			a=priorite.remove(0); 
 			// on obtient le fils gauche normalement, à vérifier
 		}
+		
+		// tri à partir de l'avant-dernier niveau
+		int num=(int)Math.pow(2, h)-1;
+		while(num>0) {
+			tmp=cle(num--);
+			triEnDescendant(tmp);
+		}
 	}
 	
 	public void swap(IArbreBinaire<Cle> a, IArbreBinaire<Cle> b) {
@@ -241,7 +255,7 @@ public class ArbreBinaire<Cle extends ICle> implements IArbreBinaire<Cle>{
 		b.cle(a.cle());
 	}
 	
-	IArbreBinaire<Cle> cle(int num){
+	public IArbreBinaire<Cle> cle(int num){
 		IArbreBinaire<Cle> res=this;
 		int n=(int)Math.floor(Math.log(num)/Math.log(2));
 		int i=n;

@@ -6,6 +6,7 @@ public interface IArbreBinaire<Cle> {
 	Cle cle();
 	
 	void cle(Cle c);
+	IArbreBinaire<Cle> cle(int num);
 	void filsGauche(IArbreBinaire<Cle> a);
 	void filsDroit(IArbreBinaire<Cle> a);
 	void pere(IArbreBinaire<Cle> a);

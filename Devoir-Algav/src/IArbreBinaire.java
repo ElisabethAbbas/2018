@@ -19,7 +19,7 @@ public interface IArbreBinaire<Cle> {
 	void tri(IArbreBinaire<Cle> a);
 	void swap(IArbreBinaire<Cle> a, IArbreBinaire<Cle> b);
 	
-	IArbreBinaire<Cle> place();
+	IArbreBinaire<Cle> placeVide();
 	IArbreBinaire<Cle> derniereCle();
 	
 	boolean Ajout(IArbreBinaire<Cle> a);

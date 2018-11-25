@@ -116,33 +116,33 @@ public class ArbreBinaire<Cle extends ICle> implements IArbreBinaire<Cle>{
 	}	
 	
 	public IArbreBinaire<Cle> derniereCle(){
-		IArbreBinaire<Cle> place=this;
+		IArbreBinaire<Cle> derniereCle=this;
 		int n=(int)Math.floor(Math.log(this.cles())/Math.log(2));
 		int i=n;
 		int clestmp=cles;
 		
 		while(i>0) {
 			if(clestmp<Math.pow(2, i)+Math.pow(2, i-1)) {
-				place=place.ag();
+				derniereCle=derniereCle.ag();
 				clestmp-=Math.pow(2, i-1);
 			}
 			else {
-				place=place.ad();
+				derniereCle=derniereCle.ad();
 				clestmp-=Math.pow(2, i);
 			}
 			i--;
 		}
 		
-		return place;
+		return derniereCle;
 	}
 	
 	public boolean Ajout(IArbreBinaire<Cle> a) {
-		IArbreBinaire<Cle> place=place();
+		IArbreBinaire<Cle> placeVide=placeVide();
 		
-		if(!place.aFilsGauche())
-			place.filsGauche(a);
-		else if(!place.aFilsDroit())
-			place.filsDroit(a);
+		if(!placeVide.aFilsGauche())
+			placeVide.filsGauche(a);
+		else if(!placeVide.aFilsDroit())
+			placeVide.filsDroit(a);
 		else
 			return false;
 		
@@ -158,6 +158,75 @@ public class ArbreBinaire<Cle extends ICle> implements IArbreBinaire<Cle>{
 			swap(a.pere(), a);
 			a=a.pere();
 		}
+	}
+	
+	private void unionRec(IArbreBinaire<Cle> res, ArrayList<IArbreBinaire<Cle>> reste) {
+		IArbreBinaire<Cle> min=null;
+
+		if(reste.isEmpty())
+			return;
+		
+		for(IArbreBinaire<Cle> e : reste)
+			if(e.cle().compareTo(min.cle())<0 || min==null)
+				min=e;
+		
+		reste.remove(min);
+		// On veut que le fils gauche soit traité avant le fils droit :
+		if(min.aFilsGauche())
+			reste.add(min.ag());
+		if(min.aFilsDroit())
+			reste.add(min.ad());
+		
+		
+		res.filsGauche(new ArbreBinaire<Cle>(null, null, min.cle(), res));
+		
+		
+		min=null;
+		if(reste.isEmpty())
+			return;
+		
+		for(IArbreBinaire<Cle> e : reste)
+			if(e.cle().compareTo(min.cle())<0 || min==null)
+				min=e;
+		
+		reste.remove(min);
+		// On veut que le fils gauche soit traité avant le fils droit :
+		if(min.aFilsGauche())
+			reste.add(min.ag());
+		if(min.aFilsDroit())
+			reste.add(min.ad());
+		
+		
+		res.filsDroit(new ArbreBinaire<Cle>(null, null, min.cle(), res));
+		
+		unionRec(res.ag(), reste);
+		unionRec(res.ad(), reste);
+	}
+	
+	public IArbreBinaire<Cle> union(IArbreBinaire<Cle> a, IArbreBinaire<Cle> b) {
+		ArrayList<IArbreBinaire<Cle>> reste=new ArrayList<IArbreBinaire<Cle>>();
+		IArbreBinaire<Cle> res;
+		
+		if(a.cle().compareTo(b.cle())<0) {
+			res = new ArbreBinaire<Cle>(null, null, a.cle(), null);
+			if(a.aFilsGauche())
+				reste.add(a.ag());
+			if(a.aFilsDroit())
+				reste.add(a.ad());
+			reste.add(b);
+		}
+		else {
+			res = new ArbreBinaire<Cle>(null, null, b.cle(), null);
+			if(b.aFilsGauche())
+				reste.add(b.ag());
+			if(a.aFilsDroit())
+				reste.add(b.ad());
+			reste.add(a);
+		}
+		
+		unionRec(res, reste);
+		
+		return res;
 	}
 	
 	public void triEnDescendant(IArbreBinaire<Cle> a) {
@@ -181,8 +250,8 @@ public class ArbreBinaire<Cle extends ICle> implements IArbreBinaire<Cle>{
 		triEnDescendant(a);
 	}
 	
-	public IArbreBinaire<Cle> place(){
-		IArbreBinaire<Cle> place=this;
+	public IArbreBinaire<Cle> placeVide(){
+		IArbreBinaire<Cle> placeVide=this;
 		int n=(int)Math.floor(Math.log(this.cles())/Math.log(2));
 		// trouver une manière de faire le log2 plus rapidement et remplacer partout
 		int i=n;
@@ -190,16 +259,16 @@ public class ArbreBinaire<Cle extends ICle> implements IArbreBinaire<Cle>{
 		
 		while(i>0) {
 			if(clestmp<Math.pow(2, i)+Math.pow(2, i-1)) {
-				place=place.ag();
+				placeVide=placeVide.ag();
 				clestmp-=Math.pow(2, i-1);
 			}
 			else {
-				place=place.ad();
+				placeVide=placeVide.ad();
 				clestmp-=Math.pow(2, i);
 			}
 			i--;
 		}
-		return place;
+		return placeVide;
 	}
 	
 	public void Supprime(IArbreBinaire<Cle> a) {
@@ -216,7 +285,7 @@ public class ArbreBinaire<Cle extends ICle> implements IArbreBinaire<Cle>{
 		cles--;
 	}
 	
-	public void consIter(ArrayList<Cle> liste) {
+	public IArbreBinaire<Cle> consIter(ArrayList<Cle> liste) {
 		int n=liste.size();
 		int h=(int) Math.floor(Math.log(n)/Math.log(2));		
 		
@@ -235,9 +304,9 @@ public class ArbreBinaire<Cle extends ICle> implements IArbreBinaire<Cle>{
 			a.filsGauche(g);
 			d=arbres.remove(0);
 			a.filsDroit(d);
-			a=a.ag();
-			priorite.add(d);
+			//a=a.ag(); // ??
 			priorite.add(g);
+			priorite.add(d);
 			a=priorite.remove(0); 
 			// on obtient le fils gauche normalement, à vérifier
 		}
@@ -248,6 +317,8 @@ public class ArbreBinaire<Cle extends ICle> implements IArbreBinaire<Cle>{
 			tmp=cle(num--);
 			triEnDescendant(tmp);
 		}
+		
+		return a;
 	}
 	
 	public void swap(IArbreBinaire<Cle> a, IArbreBinaire<Cle> b) {

@@ -1,26 +1,24 @@
 import java.util.ArrayList;
 
-public class ArbreBinaire<Cle extends ICle> implements IArbreBinaire<Cle>{
+public class ArbreBinaire{
 	
-	private Cle cle;
-	private IArbreBinaire<Cle> gauche;
-	private	IArbreBinaire<Cle> droite;
-	private IArbreBinaire<Cle> pere;
+	private Key cle;
+	private ArbreBinaire gauche;
+	private	ArbreBinaire droite;
+	private ArbreBinaire pere;
 	private int cles=0;
-	/*private ArrayList<IArbreBinaire<Cle>> places;
-	private IArbreBinaire<Cle> derniereCle;*/
 	
-	public ArbreBinaire(IArbreBinaire<Cle> gauche, IArbreBinaire<Cle> droite, 
-			Cle c, IArbreBinaire<Cle> pere) {
+	public ArbreBinaire(ArbreBinaire gauche, ArbreBinaire droite, 
+			Key c, ArbreBinaire pere) {
 		this.cle=c;
 		this.gauche=gauche;
 		this.droite=droite;
 		this.pere=pere;
-		this.cles=1+gauche.cles()+droite.cles();
-		/*this.places=new ArrayList<IArbreBinaire<Cle>>();
-		this.places.add(gauche);
-		this.places.add(droite);
-		this.derniereCle=this;*/
+		this.cles=1;
+		if(this.gauche!=null)
+			this.cles+=gauche.cles();
+		if(this.droite!=null)
+			this.cles+=droite.cles();
 	}
 	
 	public ArbreBinaire() {
@@ -28,55 +26,69 @@ public class ArbreBinaire<Cle extends ICle> implements IArbreBinaire<Cle>{
 		this.gauche=null;
 		this.droite=null;
 		this.cles=0;
-		/*this.places=new ArrayList<IArbreBinaire<Cle>>();
-		this.places.add(this);
-		this.derniereCle=null;*/
 	}
 	
-	@Override
-	public Cle cle() {
+	
+	public Key cle() {
 		return cle;
 	}
 	
-	@Override
+	
 	public int cles() {
 		return cles;
 	}
 	
-	@Override
-	public IArbreBinaire<Cle> ag() {
+	public void ajouterACles(int c) {
+		cles+=c;
+		if(pere()!=null)
+			pere().ajouterACles(c);
+	}
+	
+	public ArbreBinaire ag() {
 		return gauche;
 	}
 	
-	@Override
-	public IArbreBinaire<Cle> ad() {
+	
+	public ArbreBinaire ad() {
 		return droite;
 	}
 
-	@Override
-	public IArbreBinaire<Cle> pere() {
+	
+	public ArbreBinaire pere() {
 		return pere;
 	}
 	
-	@Override
-	public void cle(Cle c) {
+	
+	public void cle(Key c) {
 		cle=c;
 	}
 	
-	@Override
-	public void filsGauche(IArbreBinaire<Cle> a) {
-		a.pere(this);
+	
+	public void filsGauche(ArbreBinaire a) {
+		if(!aFilsGauche()&& a!=null)
+			ajouterACles(a.cles());
+		if(aFilsGauche() && a==null)
+			ajouterACles(-(ag().cles()));
+		
+		if(a!=null)
+			a.pere(this);
 		this.gauche=a;
 	}
 	
-	@Override
-	public void filsDroit(IArbreBinaire<Cle> a) {
-		a.pere(this);
+	
+	public void filsDroit(ArbreBinaire a) {
+		if(!aFilsDroit()&& a!=null)
+			ajouterACles(a.cles());
+		if(aFilsDroit() && a==null)
+			ajouterACles(-(ad().cles()));
+		
+		if(a!=null)
+			a.pere(this);
 		this.droite=a;
 	}
 	
-	@Override
-	public void pere(IArbreBinaire<Cle> a) {
+	
+	public void pere(ArbreBinaire a) {
 		pere=a;
 	}
 	
@@ -91,27 +103,139 @@ public class ArbreBinaire<Cle extends ICle> implements IArbreBinaire<Cle>{
 	public boolean estFilsDroit(){
 		if(pere()==null)
 			return false;
-		if(pere().ag().equals(this))
-			return false;
-		if(pere().ad().equals(this))
-			return true;
 		
+		if(pere().aFilsDroit())
+			if(pere().ad().equals(this))
+				return true;
 		return false;
 	}
 	
 	public boolean estFilsGauche(){
 		if(pere()==null)
 			return false;
-		if(pere().ad().equals(this))
-			return false;
-		if(pere().ag().equals(this))
-			return true;
+
+		if(pere().aFilsGauche())
+			if(pere().ag().equals(this))
+				return true;
 		
 		return false;
 	}	
 	
-	public IArbreBinaire<Cle> derniereCle(){
-		IArbreBinaire<Cle> derniereCle=this;
+	public boolean Ajout(Key k) {
+		return Ajout(new ArbreBinaire(null, null, k, null));
+	}
+	
+	public boolean Ajout(ArbreBinaire a) {
+		if(cles()==0) {
+			this.cle=a.cle;
+			this.gauche=a.gauche;
+			this.droite=a.droite;
+			this.cles=a.cles;
+			return true;
+		}
+		ArbreBinaire placeVide=placeVide();
+		
+		if(!placeVide.aFilsGauche())
+			placeVide.filsGauche(a);
+		else if(!placeVide.aFilsDroit())
+			placeVide.filsDroit(a);
+		else
+			return false;
+		
+		/* tri pour avoir un tas min */
+		tri(a);
+		
+		return true;
+	}
+	
+	public void triEnRemontant(ArbreBinaire a) {
+		while(a.pere()!=null && Key.inf(a.cle(), a.pere().cle())) {
+			swap(a.pere(), a);
+			a=a.pere();
+		}
+	}
+	
+	public static ArbreBinaire union(ArbreBinaire u, ArbreBinaire v) {
+		ArrayList<ArbreBinaire> priorite=new ArrayList<ArbreBinaire>();
+		ArrayList<ArbreBinaire> arbres=new ArrayList<ArbreBinaire>();
+		ArrayList<ArbreBinaire> parcours=new ArrayList<ArbreBinaire>();
+		parcours.add(u);
+		parcours.add(v);
+		ArbreBinaire a, g, d, tmp;
+
+		tmp=parcours.remove(0);
+		a=new ArbreBinaire(null, null, tmp.cle(), null);
+		if(tmp.aFilsGauche())
+			parcours.add(tmp.ag());
+		if(tmp.aFilsDroit())
+			parcours.add(tmp.ad());
+		
+		
+		arbres.add(a);
+		while(!parcours.isEmpty()) {
+			tmp=parcours.remove(0);
+			g=new ArbreBinaire(null, null, tmp.cle(), null);
+			if(tmp.aFilsGauche())
+				parcours.add(tmp.ag());
+			if(tmp.aFilsDroit())
+				parcours.add(tmp.ad());
+			priorite.add(g);
+			a.filsGauche(g);
+			arbres.add(g);
+			
+			d=null;
+			if(!parcours.isEmpty()) {
+				tmp=parcours.remove(0);
+				d=new ArbreBinaire(null, null, tmp.cle(), null);
+				if(tmp.aFilsGauche())
+					parcours.add(tmp.ag());
+				if(tmp.aFilsDroit())
+					parcours.add(tmp.ad());
+				priorite.add(d);
+				arbres.add(d);
+			}
+			a.filsDroit(d);
+			
+			a=priorite.remove(0); 
+		}
+		
+		// tri à partir de la fin 
+		for(int i=arbres.size()-1; i>=0; i--)
+			triEnDescendant(arbres.get(i));
+		
+		/* On récupère la racine. */
+		while(a.pere()!=null)
+			a=a.pere();
+		
+		return a;
+	}
+	
+	public static void triEnDescendant(ArbreBinaire a) {
+		while(a.aFilsGauche()) { 
+			if(a.aFilsDroit() 
+					&& Key.inf(a.ad().cle(), a.ag().cle()) 
+					&& Key.inf(a.ad().cle(), a.cle())) {
+				swap(a.ad(), a);
+				a=a.ad();
+					
+			}
+			else if(Key.inf(a.ag().cle(), a.cle())) {
+				swap(a.ag(), a);
+				a=a.ag();
+			}
+			else {
+				break;
+			}
+		}
+	}
+	
+	public void tri(ArbreBinaire a){
+		triEnRemontant(a);
+		triEnDescendant(a);
+	}
+	
+	public ArbreBinaire derniereCle(){
+		ArbreBinaire derniereCle=this;
 		int n=(int)Math.floor(Math.log(this.cles())/Math.log(2));
 		int i=n;
 		int clestmp=cles;
@@ -131,196 +255,15 @@ public class ArbreBinaire<Cle extends ICle> implements IArbreBinaire<Cle>{
 		return derniereCle;
 	}
 	
-	/*public boolean Ajout(IArbreBinaire<Cle> a) {
-		IArbreBinaire<Cle> placeVide=placeVide();
-		
-		if(!placeVide.aFilsGauche())
-			placeVide.filsGauche(a);
-		else if(!placeVide.aFilsDroit())
-			placeVide.filsDroit(a);
-		else
-			return false;
-		
-		cles++;*/
-		/* tri pour avoir un tas min */
-		/*tri(a);
-		
-		return true;
-	}*/
-	
-	public boolean Ajout(IArbreBinaire<Cle> a) {
-		IArbreBinaire<Cle> placeVide=placeVide();//places.remove(0);
-		
-		if(!placeVide.aFilsGauche())
-			placeVide.filsGauche(a);
-		else if(!placeVide.aFilsDroit())
-			placeVide.filsDroit(a);
-		else
-			return false;
-		
-		cles++;
-		/* tri pour avoir un tas min */
-		tri(a);
-		
-		return true;
-	}
-	
-	public void triEnRemontant(IArbreBinaire<Cle> a) {
-		while(a.pere()!=null && a.pere().cle().compareTo(a.cle())>0) {
-			swap(a.pere(), a);
-			a=a.pere();
-		}
-	}
-	
-	/*private void unionRec(IArbreBinaire<Cle> res, ArrayList<IArbreBinaire<Cle>> reste) {
-		IArbreBinaire<Cle> min=null;
+	public ArbreBinaire placeVide(){
+		ArbreBinaire placeVide=this;
+		int n=(int)Math.floor(Math.log(this.cles()+1)/Math.log(2));
 
-		if(reste.isEmpty())
-			return;
-		
-		for(IArbreBinaire<Cle> e : reste)
-			if(e.cle().compareTo(min.cle())<0 || min==null)
-				min=e;
-		
-		reste.remove(min);
-		// On veut que le fils gauche soit traité avant le fils droit :
-		if(min.aFilsGauche())
-			reste.add(min.ag());
-		if(min.aFilsDroit())
-			reste.add(min.ad());
-		
-		
-		res.filsGauche(new ArbreBinaire<Cle>(null, null, min.cle(), res));
-		
-		
-		min=null;
-		if(reste.isEmpty())
-			return;
-		
-		for(IArbreBinaire<Cle> e : reste)
-			if(e.cle().compareTo(min.cle())<0 || min==null)
-				min=e;
-		
-		reste.remove(min);
-		// On veut que le fils gauche soit traité avant le fils droit :
-		if(min.aFilsGauche())
-			reste.add(min.ag());
-		if(min.aFilsDroit())
-			reste.add(min.ad());
-		
-		
-		res.filsDroit(new ArbreBinaire<Cle>(null, null, min.cle(), res));
-		
-		unionRec(res.ag(), reste);
-		unionRec(res.ad(), reste);
-	}
-	
-	public IArbreBinaire<Cle> union(IArbreBinaire<Cle> a, IArbreBinaire<Cle> b) {
-		ArrayList<IArbreBinaire<Cle>> reste=new ArrayList<IArbreBinaire<Cle>>();
-		IArbreBinaire<Cle> res;
-		
-		if(a.cle().compareTo(b.cle())<0) {
-			res = new ArbreBinaire<Cle>(null, null, a.cle(), null);
-			if(a.aFilsGauche())
-				reste.add(a.ag());
-			if(a.aFilsDroit())
-				reste.add(a.ad());
-			reste.add(b);
-		}
-		else {
-			res = new ArbreBinaire<Cle>(null, null, b.cle(), null);
-			if(b.aFilsGauche())
-				reste.add(b.ag());
-			if(a.aFilsDroit())
-				reste.add(b.ad());
-			reste.add(a);
-		}
-		
-		unionRec(res, reste);
-		
-		return res;
-	}*/
-	
-	public IArbreBinaire<Cle> union(IArbreBinaire<Cle> u, IArbreBinaire<Cle> v) {
-		ArrayList<IArbreBinaire<Cle>> priorite=new ArrayList<IArbreBinaire<Cle>>();
-		ArrayList<IArbreBinaire<Cle>> arbres=new ArrayList<IArbreBinaire<Cle>>();
-		ArrayList<IArbreBinaire<Cle>> parcours=new ArrayList<IArbreBinaire<Cle>>();
-		parcours.add(u);
-		parcours.add(v);
-		IArbreBinaire<Cle> a, g, d, tmp;
-
-		tmp=parcours.remove(0);
-		a=new ArbreBinaire<Cle>(null, null, tmp.cle(), null);
-		if(tmp.aFilsGauche())
-			parcours.add(tmp.ag());
-		if(tmp.aFilsDroit())
-			parcours.add(tmp.ad());
-		
-		
-		arbres.add(a);
-		while(!parcours.isEmpty()) {
-			tmp=parcours.remove(0);
-			g=new ArbreBinaire<Cle>(null, null, tmp.cle(), null);
-			if(tmp.aFilsGauche())
-				parcours.add(tmp.ag());
-			if(tmp.aFilsDroit())
-				parcours.add(tmp.ad());
-			priorite.add(g);
-			a.filsGauche(g);
-			arbres.add(g);
-			
-			d=null;
-			if(!parcours.isEmpty()) {
-				tmp=parcours.remove(0);
-				d=new ArbreBinaire<Cle>(null, null, tmp.cle(), null);
-				if(tmp.aFilsGauche())
-					parcours.add(tmp.ag());
-				if(tmp.aFilsDroit())
-					parcours.add(tmp.ad());
-				priorite.add(d);
-				arbres.add(d);
-			}
-			a.filsDroit(d);
-			
-			a=priorite.remove(0); 
-		}
-		
-		// tri à partir de la fin 
-		for(int i=arbres.size()-1; i>=0; i--)
-			triEnDescendant(arbres.get(i));
-		
-		return a;
-	}
-	
-	public void triEnDescendant(IArbreBinaire<Cle> a) {
-		while(a.aFilsGauche()) {
-			if(a.ag().cle().compareTo(a.ad().cle())>0) {
-				swap(a.ag(), a);
-				a=a.ag();
-			}
-			else if(a.aFilsDroit() && a.ad().cle().compareTo(a.cle())>0) {
-				swap(a.ad(), a);
-				a=a.ad();
-			}
-			else {
-				break;
-			}
-		}
-	}
-	
-	public void tri(IArbreBinaire<Cle> a){
-		triEnRemontant(a);
-		triEnDescendant(a);
-	}
-	
-	public IArbreBinaire<Cle> placeVide(){
-		IArbreBinaire<Cle> placeVide=this;
-		int n=(int)Math.floor(Math.log(this.cles())/Math.log(2));
 		// trouver une manière de faire le log2 plus rapidement et remplacer partout
 		int i=n;
 		int clestmp=cles+1;
 		
-		while(i>0) {
+		while(i>1) {
 			if(clestmp<Math.pow(2, i)+Math.pow(2, i-1)) {
 				placeVide=placeVide.ag();
 				clestmp-=Math.pow(2, i-1);
@@ -331,11 +274,12 @@ public class ArbreBinaire<Cle extends ICle> implements IArbreBinaire<Cle>{
 			}
 			i--;
 		}
+		
 		return placeVide;
 	}
 	
-	public void Supprime(IArbreBinaire<Cle> a) {
-		IArbreBinaire<Cle> derniereCle=derniereCle();
+	public void Supprime(ArbreBinaire a) {
+		ArbreBinaire derniereCle=derniereCle();
 		
 		swap(a, derniereCle);
 		a.tri(a);
@@ -345,18 +289,19 @@ public class ArbreBinaire<Cle extends ICle> implements IArbreBinaire<Cle>{
 		else if(derniereCle.estFilsDroit())
 			derniereCle.pere().filsDroit(null);
 		
-		cles--;
+		ajouterACles(-1);
 	}
 	
-	public IArbreBinaire<Cle> consIter(ArrayList<Cle> liste) {		
-		ArrayList<IArbreBinaire<Cle>> priorite=new ArrayList<IArbreBinaire<Cle>>();
-		ArrayList<IArbreBinaire<Cle>> arbres=new ArrayList<IArbreBinaire<Cle>>();
-		IArbreBinaire<Cle> a, g, d;
+	public static ArbreBinaire consIter(ArrayList<Key> liste) {		
+		ArrayList<ArbreBinaire> priorite=new ArrayList<ArbreBinaire>();
+		ArrayList<ArbreBinaire> arbres=new ArrayList<ArbreBinaire>();
+		ArbreBinaire a, g, d;
 
-		a=new ArbreBinaire<Cle>(null, null, liste.get(0), null);
+		a=new ArbreBinaire(null, null, liste.get(0), null);
 		arbres.add(a);
+		
 		for(int i=1; i<liste.size(); i++) {
-			g=new ArbreBinaire<Cle>(null, null, liste.get(i), null);
+			g=new ArbreBinaire(null, null, liste.get(i), null);
 			priorite.add(g);
 			a.filsGauche(g);
 			arbres.add(g);
@@ -364,29 +309,35 @@ public class ArbreBinaire<Cle extends ICle> implements IArbreBinaire<Cle>{
 			i++;
 			d=null;
 			if(i<liste.size()) {
-				d=new ArbreBinaire<Cle>(null, null, liste.get(i), null);
+				d=new ArbreBinaire(null, null, liste.get(i), null);
 				priorite.add(d);
 				arbres.add(d);
 			}
 			a.filsDroit(d);
-			
-			a=priorite.remove(0); 
+			a=priorite.remove(0);
 		}
 		
 		// tri à partir de la fin 
-		for(int i=arbres.size()-1; i>=0; i--)
+		for(int i=arbres.size()-1; i>=0; i--) {
 			triEnDescendant(arbres.get(i));
+		}
+		
+		// on récupère la racine 
+		// à vérif
+		while(a.pere()!=null) 
+			a=a.pere();
 		
 		return a;
 	}
 	
-	public void swap(IArbreBinaire<Cle> a, IArbreBinaire<Cle> b) {
+	public static void swap(ArbreBinaire a, ArbreBinaire b) {
+		Key aTmp=a.cle();
 		a.cle(b.cle());
-		b.cle(a.cle());
+		b.cle(aTmp);
 	}
 	
-	public IArbreBinaire<Cle> cle(int num){
-		IArbreBinaire<Cle> res=this;
+	public ArbreBinaire cle(int num){
+		ArbreBinaire res=this;
 		int n=(int)Math.floor(Math.log(num)/Math.log(2));
 		int i=n;
 		int numtmp=num;
@@ -405,8 +356,22 @@ public class ArbreBinaire<Cle extends ICle> implements IArbreBinaire<Cle>{
 		return res;
 	}
 
-	@Override
+	
 	public void SupprMin() {
 		Supprime(this);
+	}
+	
+	@Override
+	public String toString() {
+		String s = ""+cle.getKey().toString(16) + " fg : " + ((aFilsGauche())?ag().cle().getKey().toString(16):"none") + " fd : "+ ((aFilsDroit())?ad().cle().getKey().toString(16):"none");
+		s+="\n";
+		
+		if(aFilsGauche()) 
+			s+=ag();
+		
+		if(aFilsDroit()) 
+			s+=ad();
+			
+		return s;
 	}
 }

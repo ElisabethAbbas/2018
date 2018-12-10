@@ -19,6 +19,10 @@ public class Key {
 	public Key(BigInteger b) {
 		key=b;
 	}
+	
+	public Key(Key k) {
+		key=new BigInteger(k.key.toString());
+	}
 
 	public BigInteger getKey() {
 		return key;

@@ -1,21 +1,21 @@
 import java.util.ArrayList;
 
-public class TournoiBinomial<Cle extends ICle> {
+public class TournoiBinomial {
 
-	Cle cle;
-	ArrayList<TournoiBinomial<Cle>> fils;
+	Key cle;
+	ArrayList<TournoiBinomial> fils;
 	
 	
-	public TournoiBinomial(Cle cle){
+	public TournoiBinomial(Key cle){
 		this.cle=cle;
-		fils = new ArrayList<TournoiBinomial<Cle>>();
+		fils = new ArrayList<TournoiBinomial>();
 	}
 	
-	public TournoiBinomial(TournoiBinomial<Cle> t){
-		this.cle=t.cle;
-		this.fils=new ArrayList<TournoiBinomial<Cle>>();
-		for(TournoiBinomial<Cle> e : fils)
-			this.fils.add(new TournoiBinomial<Cle>((TournoiBinomial<Cle>)e));
+	public TournoiBinomial(TournoiBinomial T) {
+		this.cle= new Key(cle);
+		fils=new ArrayList<TournoiBinomial>();
+		for(TournoiBinomial t : T.fils)
+			fils.add(new TournoiBinomial(t));
 	}
 	
 	public boolean EstVide() {
@@ -26,19 +26,32 @@ public class TournoiBinomial<Cle extends ICle> {
 		return fils.size();
 	}
 
-	public void Union2Tid(TournoiBinomial<Cle> t) {
-		if(t.Degre()==Degre())
-			fils.add(t);
+	public static TournoiBinomial Union2Tid(TournoiBinomial t1, TournoiBinomial t2) {
+		TournoiBinomial res=null;
+		if(t1.Degre()==t2.Degre()) {
+			if(Key.inf(t1.cle, t2.cle)) {
+				res = new TournoiBinomial(t1.cle);
+				res.fils.add(t2);
+			}
+			else {
+				res = new TournoiBinomial(t2.cle);
+				res.fils.add(t1);
+			}
+		}		
+		else 
+			System.err.println("Pas de la même taille");
+		
+		return res;
 	}
 
-	public FileBinomiale<Cle> Decapite() {
-		TournoiBinomial<Cle> t =(TournoiBinomial<Cle>) fils.remove(fils.size()-1);		
-		FileBinomiale<Cle> f = new FileBinomiale<Cle>(fils);
+	public FileBinomiale Decapite() {
+		TournoiBinomial t =(TournoiBinomial) fils.remove(fils.size()-1);		
+		FileBinomiale f = new FileBinomiale(fils);
 		fils.add(t);
 		return f;
 	}
 
-	public FileBinomiale<Cle> File() {
-		return new FileBinomiale<Cle>(this);
+	public FileBinomiale File() {
+		return new FileBinomiale(this);
 	}
 }

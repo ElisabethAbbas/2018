@@ -19,7 +19,7 @@ public class FileBinomiale {
 		tournois.add(t);
 	}
 
-	private void TriFusionTB(List<TournoiBinomial> liste) {
+	private void TriFusion(List<TournoiBinomial> liste) {
 		if(liste.size()==0)
 			return;
 		else if(liste.size()==1)
@@ -29,14 +29,14 @@ public class FileBinomiale {
 				liste.add(1, liste.remove(0));
 		}
 		else {
-			TriFusionTB(liste.subList(0, (liste.size()-1)/2));
-			TriFusionTB(liste.subList((liste.size()-1)/2+1, liste.size()-1));
+			TriFusion(liste.subList(0, (liste.size()-1)/2));
+			TriFusion(liste.subList((liste.size()-1)/2+1, liste.size()-1));
 		}
 	}
 
 	public FileBinomiale(ArrayList<TournoiBinomial> liste) {
 		tournois=new ArrayList<TournoiBinomial>();
-		TriFusionTB(tournois);
+		TriFusion(tournois);
 		tournois.addAll(liste);
 	}
 
@@ -58,7 +58,7 @@ public class FileBinomiale {
 		tournois.add(0, t);
 	}
 
-	public static FileBinomiale UnionFile(FileBinomiale F1, FileBinomiale F2) {
+	public static FileBinomiale Union(FileBinomiale F1, FileBinomiale F2) {
 		return UnionFret(F1, F2, null);
 	}
 
@@ -75,13 +75,13 @@ public class FileBinomiale {
 			FileBinomiale res;
 
 			if(T1.Degre()<T2.Degre()) {
-				res=UnionFile(F1.Reste(), F2);
+				res=Union(F1.Reste(), F2);
 				res.AjoutMin(T1);
 				return res;
 			}
 
 			else if(T1.Degre()>T2.Degre()) {
-				res=UnionFile(F2.Reste(), F1);
+				res=Union(F2.Reste(), F1);
 				res.AjoutMin(T2);
 				return res;
 			}
@@ -92,14 +92,14 @@ public class FileBinomiale {
 		}
 		else {
 			if(F1==null || F1.EstVide())
-				return UnionFile(T.File(), F2);
+				return Union(T.File(), F2);
 			if(F2==null || F2.EstVide())
-				return UnionFile(T.File(), F1);
+				return Union(T.File(), F1);
 
 			TournoiBinomial T1 = F1.MinDeg();
 			TournoiBinomial T2 = F2.MinDeg();
 			if(T.Degre() < T1.Degre() && T.Degre() < T2.Degre()) {
-				FileBinomiale res = UnionFile(F1, F2);
+				FileBinomiale res = Union(F1, F2);
 				res.AjoutMin(T);
 				return res;
 			}
@@ -137,7 +137,7 @@ public class FileBinomiale {
 	}*/
 
 	public static FileBinomiale Ajout(FileBinomiale f, Key k) {
-		return UnionFile((new TournoiBinomial(k)).File(), f);
+		return Union((new TournoiBinomial(k)).File(), f);
 	}
 
 	public static FileBinomiale consIter(ArrayList<Key> elements) {
@@ -160,7 +160,7 @@ public class FileBinomiale {
 		for(TournoiBinomial t : tournois) {
 			if(tMin==t)
 				continue;
-			res=UnionFile(res, t.File());
+			res=Union(res, t.File());
 		}
 		
 		return res;

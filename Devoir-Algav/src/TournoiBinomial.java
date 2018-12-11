@@ -26,6 +26,8 @@ public class TournoiBinomial {
 		return fils.size();
 	}
 
+	/* On suppose que les deux tournois ont le même degré. 
+	 * Renvoie une erreur dans le cas contraire. */
 	public static TournoiBinomial Union2Tid(TournoiBinomial t1, TournoiBinomial t2) {
 		TournoiBinomial res=null;
 		if(t1.Degre()==t2.Degre()) {
@@ -47,7 +49,7 @@ public class TournoiBinomial {
 	public FileBinomiale Decapite() {
 		FileBinomiale res = new FileBinomiale();
 		for(TournoiBinomial t : fils)
-			res=FileBinomiale.UnionFile(res, t.File());
+			res=FileBinomiale.Union(res, t.File());
 		
 		return res;
 	}

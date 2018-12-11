@@ -10,7 +10,7 @@ public class FileBinomiale {
 
 	public FileBinomiale(FileBinomiale F) {
 		tournois= new ArrayList<TournoiBinomial>();
-		for(TournoiBinomial t : F.tournois)
+		for(TournoiBinomial t : F.tournois) 
 			tournois.add(new TournoiBinomial(t));
 	}
 
@@ -54,8 +54,10 @@ public class FileBinomiale {
 		return f;
 	}
 
-	public void AjoutMin(TournoiBinomial t) {
-		tournois.add(0, t);
+	public FileBinomiale AjoutMin(TournoiBinomial t) {
+		FileBinomiale res =new FileBinomiale(this);
+		res.tournois.add(0, t);
+		return res;
 	}
 
 	public static FileBinomiale Union(FileBinomiale F1, FileBinomiale F2) {
@@ -76,13 +78,13 @@ public class FileBinomiale {
 
 			if(T1.Degre()<T2.Degre()) {
 				res=Union(F1.Reste(), F2);
-				res.AjoutMin(T1);
+				res=res.AjoutMin(T1);
 				return res;
 			}
 
 			else if(T1.Degre()>T2.Degre()) {
 				res=Union(F2.Reste(), F1);
-				res.AjoutMin(T2);
+				res=res.AjoutMin(T2);
 				return res;
 			}
 
@@ -100,12 +102,12 @@ public class FileBinomiale {
 			TournoiBinomial T2 = F2.MinDeg();
 			if(T.Degre() < T1.Degre() && T.Degre() < T2.Degre()) {
 				FileBinomiale res = Union(F1, F2);
-				res.AjoutMin(T);
+				res=res.AjoutMin(T);
 				return res;
 			}
 			if(T.Degre() == T1.Degre() && T.Degre() == T2.Degre()) {
 				FileBinomiale res = UnionFret(F1.Reste(), F2.Reste(), TournoiBinomial.Union2Tid(T1, T2));
-				res.AjoutMin(T);
+				res=res.AjoutMin(T);
 				return res;
 			}
 			if(T.Degre() == T1.Degre() && T.Degre() < T2.Degre()) {
@@ -117,24 +119,8 @@ public class FileBinomiale {
 				return res;
 			}
 		}
-		
 		return null;
 	}
-
-	/*private static void TriFusionK(List<Key> liste) {
-		if(liste.size()==0)
-			return;
-		else if(liste.size()==1)
-			return;
-		else if(liste.size()==2) {
-			if(!Key.inf(liste.get(0), liste.get(1)))
-				liste.add(1, liste.remove(0));
-		}
-		else {
-			TriFusionK(liste.subList(0, (liste.size()-1)/2));
-			TriFusionK(liste.subList((liste.size()-1)/2+1, liste.size()-1));
-		}
-	}*/
 
 	public static FileBinomiale Ajout(FileBinomiale f, Key k) {
 		return Union((new TournoiBinomial(k)).File(), f);
@@ -164,5 +150,14 @@ public class FileBinomiale {
 		}
 		
 		return res;
+	}
+	
+	@Override
+	public String toString() {
+		String s = "";
+		for(TournoiBinomial t : tournois) 
+			s+="* tournoi degré "+t.Degre()+" : "+t.toString()+"\n";
+		
+		return "FB={{{\n"+s+"}}}";
 	}
 }

@@ -45,10 +45,11 @@ public class TournoiBinomial {
 	}
 
 	public FileBinomiale Decapite() {
-		TournoiBinomial t =(TournoiBinomial) fils.remove(fils.size()-1);		
-		FileBinomiale f = new FileBinomiale(fils);
-		fils.add(t);
-		return f;
+		FileBinomiale res = new FileBinomiale();
+		for(TournoiBinomial t : fils)
+			res=FileBinomiale.UnionFile(res, t.File());
+		
+		return res;
 	}
 
 	public FileBinomiale File() {

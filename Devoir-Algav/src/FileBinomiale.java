@@ -121,7 +121,7 @@ public class FileBinomiale {
 		return null;
 	}
 
-	private static void TriFusionK(List<Key> liste) {
+	/*private static void TriFusionK(List<Key> liste) {
 		if(liste.size()==0)
 			return;
 		else if(liste.size()==1)
@@ -134,7 +134,7 @@ public class FileBinomiale {
 			TriFusionK(liste.subList(0, (liste.size()-1)/2));
 			TriFusionK(liste.subList((liste.size()-1)/2+1, liste.size()-1));
 		}
-	}
+	}*/
 
 	public static FileBinomiale Ajout(FileBinomiale f, Key k) {
 		return UnionFile((new TournoiBinomial(k)).File(), f);
@@ -147,4 +147,22 @@ public class FileBinomiale {
 		return f;
 	}
 
+	public FileBinomiale SupprMin() {
+		TournoiBinomial tMin=null;
+		FileBinomiale res=null;
+		// on cherche la clé la plus faible
+		for(TournoiBinomial t : tournois)
+			if(tMin==null || Key.inf(t.cle, tMin.cle))
+				tMin=t;
+		
+		// on ajoute le tournoi décapité de sa racine à la file binomiale
+		res=tMin.Decapite();
+		for(TournoiBinomial t : tournois) {
+			if(tMin==t)
+				continue;
+			res=UnionFile(res, t.File());
+		}
+		
+		return res;
+	}
 }

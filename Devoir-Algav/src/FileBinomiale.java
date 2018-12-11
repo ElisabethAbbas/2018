@@ -148,7 +148,7 @@ public class FileBinomiale {
 				continue;
 			res=Union(res, t.File());
 		}
-		
+
 		return res;
 	}
 	

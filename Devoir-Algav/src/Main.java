@@ -26,10 +26,8 @@ public class Main {
 		b = FileBinomiale.Ajout(b, new Key(new BigInteger("538429", 16)));
 		b = FileBinomiale.Ajout(b, new Key(new BigInteger("8429", 16)));
 		b = FileBinomiale.Ajout(b, new Key(new BigInteger("54438429", 16)));
-		System.out.println(b);
 		b=b.SupprMin();
-		/*System.out.println(b);
-		System.out.println(a);
-		System.out.println(FileBinomiale.Union(a, b));*/
+		System.out.println(b);
+		System.out.println(FileBinomiale.Union(a, b));
 	}
 }

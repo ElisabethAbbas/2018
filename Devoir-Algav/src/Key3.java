@@ -5,30 +5,37 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Key {
+public class Key3 {
+
+
 	//une cl¨¦ est repr¨¦sent par 4 entiers
 	//ici, le bit au poid faible se trouve? l'index 0
-	BigInteger key;
-	int[] key2;
+	int[] key;
 	public static final int SIZE=4;
 	public static final int LINE_SIZE=32;
 	public static final int INT_HEX_REP_SIZE=8;
 	public static final String ZERO_X="0x";
-	
-	public Key(BigInteger b) {
-		key=b;
-	}
-	
-	public Key(Key k) {
-		key=new BigInteger(k.key.toString());
+
+	//on v¨¦ifie qu'on a bien 4 int;
+	public Key3(int[] key) {
+		this.key = new int[4];
+		if(isRightSize(key)) {
+			this.key=key;
+		}
+
 	}
 
-	public BigInteger getKey() {
+
+	public int[] getKey() {
 		return key;
 	}
 
-	public void setKey(BigInteger b) {
-		this.key=b;
+
+	public void setKey(int[] key) {
+		this.key = new int[4];
+		if(isRightSize(key)) {
+			this.key=key;
+		}
 	}
 
 	boolean isRightSize(int[] key) {
@@ -36,22 +43,32 @@ public class Key {
 	}
 
 	public static boolean inf(Key key1, Key key2) {
-		BigInteger keyRep1 = key1.getKey();
-		BigInteger keyRep2 = key2.getKey();
-		
-		if(keyRep1.compareTo(keyRep2)<0) {
+		int[] keyRep1 = key1.getKey();
+		int[] keyRep2 = key2.getKey();
+		int index;
+		//int fromLastIndex;
+		for(index=0; index < SIZE;index++) {
+			//fromLastIndex=(SIZE-1)-index;
+			if(keyRep1[index] < keyRep2[index] ) {
 				return true;
+			}
 		}
 		return false;
 	}
 
 	public static boolean eg(Key key1, Key key2) {
-		BigInteger keyRep1 = key1.getKey();
-		BigInteger keyRep2 = key2.getKey();
+
 		
-		if(keyRep1.compareTo(keyRep2)==0)
-			return false;
-		
+		int[] keyRep1 = key1.getKey();
+		int[] keyRep2 = key2.getKey();
+		int index;
+		//int fromLastIndex;
+		for(index=0; index < SIZE;index++) {
+			//fromLastIndex=(SIZE-1)-index;
+			if(keyRep1[index] != keyRep2[index] ) {
+				return false;
+			}
+		}
 		return true;
 	}
 	
@@ -69,15 +86,14 @@ public class Key {
 	
 	public static ArrayList<Key> getKeysFromFile(String pathKeyFile) throws Exception {
 		ArrayList<Key> result = new ArrayList<Key>();
-		List<String> lines = Files.readAllLines(Paths.get(pathKeyFile),Charset.defaultCharset());
+		List<String> lines = Files.readAllLines(Paths.get(pathKeyFile),Charset.defaultCharset() );
 
 		for (String line : lines) {
-			line=fillLineOfzero(line);
-			BigInteger key = new BigInteger(line.substring(2), 16);
-
+			int[] key = new int[4];
+			key=convertingLineToArrayInt(line);
+			
 			result.add(new Key(key));
 		}
-		
 		return result;
 	}
 
@@ -90,6 +106,7 @@ public class Key {
 	}
 	
 	public static int[] convertingLineToArrayInt(String line) {
+
 		int deb;
 		int fin;
 		int[] result = new int[4];
@@ -115,6 +132,25 @@ public class Key {
 		}
 		return result;
 	};
+	
+	public void showIntsOfKey() {
+		StringBuilder sb= new StringBuilder();
+		for(int index = 0 ; index < SIZE; index ++) {
+			sb.append("--index-> "+index+ ":"+key[index] +" \n");
+			
+		} 
+		System.out.println(sb.toString());
+	}
+	
+	public static void displayArrayOfKeys(ArrayList<Key>  keys) {
+		int index= 0;
+		for (Key key : keys) {
+			System.out.println("key n"+ index);
+			key.showIntsOfKey();
+			index++;
+		}		
+	}
+
 
 
 }

@@ -127,9 +127,17 @@ public class FileBinomiale {
 	}
 
 	public static FileBinomiale consIter(ArrayList<Key> elements) {
+		long startTime = System.nanoTime(); 
 		FileBinomiale f = new FileBinomiale();
 		for(Key k : elements)
 			f = Ajout(f, k);
+		
+		long endTime = System.nanoTime(); 
+
+		System.out.println("temps d'execution: " + (endTime - startTime) + " NanoSecond"); 
+		System.out.println("temps d'execution en moy: " + ((endTime - startTime)/elements.size()) + " NanoSecond");
+		System.out.println("temps d'execution en moy: " + (((endTime - startTime)/elements.size())/1000000) + " ms");
+		
 		return f;
 	}
 

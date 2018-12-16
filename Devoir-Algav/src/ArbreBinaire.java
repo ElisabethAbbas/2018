@@ -293,6 +293,7 @@ public class ArbreBinaire{
 	}
 	
 	public static ArbreBinaire consIter(ArrayList<Key> liste) {		
+		long startTime = System.nanoTime(); 
 		ArrayList<ArbreBinaire> priorite=new ArrayList<ArbreBinaire>();
 		ArrayList<ArbreBinaire> arbres=new ArrayList<ArbreBinaire>();
 		ArbreBinaire a, g, d;
@@ -326,6 +327,20 @@ public class ArbreBinaire{
 		// à vérif
 		while(a.pere()!=null) 
 			a=a.pere();
+		long endTime = System.nanoTime(); 
+
+		System.out.println("temps d'execution: " + (endTime - startTime) + " NanoSecond"); 
+		System.out.println("temps d'execution en moy: " + ((endTime - startTime)/liste.size()) + " NanoSecond");
+		System.out.println("temps d'execution en moy: " + (((endTime - startTime)/liste.size())/1000000) + " ms");
+		return a;
+	}
+	
+	/* Méthode moins efficace en O(n log n), 
+	 * utilisée en comparaison dans le rapport.*/
+	public static ArbreBinaire consIter2(ArrayList<Key> liste) {
+		ArbreBinaire a = new ArbreBinaire();
+		for(Key k : liste)
+			a.Ajout(k);
 		
 		return a;
 	}

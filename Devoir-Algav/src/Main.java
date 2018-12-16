@@ -10,7 +10,59 @@ public class Main {
 			e.printStackTrace();
 		}*/
 		
-		ArrayList<Key> l = new ArrayList<Key>();
+		/*try {
+			System.out.println(ArbreBinaire.consIter(Key.getKeysFromFile("cles_alea/jeu_1_nb_cles_10000.txt")));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		
+		System.out.println("Working Directory = " +
+	              System.getProperty("user.dir"));
+		String pathKeyFile=System.getProperty("user.dir")+"/cles_alea/";
+		String pathKeyFile1 =pathKeyFile+ "jeu_2_nb_cles_100.txt";
+		String pathKeyFile2 =pathKeyFile+ "jeu_2_nb_cles_1000.txt";
+		//String pathKeyFile3 =pathKeyFile+ "jeu_2_nb_cles_20000.txt";
+
+		ArrayList<Key> keys;		
+		ArrayList<Key> keys2;
+		ArrayList<Key> keys3;
+		
+		try {
+			keys=Key.getKeysFromFile(pathKeyFile1);
+			keys2=Key.getKeysFromFile(pathKeyFile2);
+			//keys3=Key.getKeysFromFile(pathKeyFile3);
+			
+			/*FileBinomiale f = FileBinomiale.consIter(keys);
+			FileBinomiale g = FileBinomiale.consIter(keys2);
+			FileBinomiale h = FileBinomiale.consIter(keys3);*/
+			
+			ArbreBinaire fa = ArbreBinaire.consIter(keys);
+			ArbreBinaire ga = ArbreBinaire.consIter(keys2);
+			//ArbreBinaire ha = ArbreBinaire.consIter(keys3);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		/*ArrayList<Key> l = new ArrayList<Key>();
+		l.add(new Key(new BigInteger("7", 16))); 
+		l.add(new Key(new BigInteger("5", 16))); 
+		l.add(new Key(new BigInteger("13", 16))); 
+		l.add(new Key(new BigInteger("8", 16))); 
+		l.add(new Key(new BigInteger("14", 16))); 
+		l.add(new Key(new BigInteger("12", 16)));
+		l.add(new Key(new BigInteger("10", 16)));
+		l.add(new Key(new BigInteger("6", 16)));
+		l.add(new Key(new BigInteger("15", 16)));
+		l.add(new Key(new BigInteger("2", 16)));
+		
+		ArbreBinaire a = ArbreBinaire.consIter(l);
+	
+		System.out.println(a);*/
+		
+		//Key.displayArrayOfKeys(keys);
+		/*ArrayList<Key> l = new ArrayList<Key>();
 		l.add(new Key(new BigInteger("e28429", 16))); 
 		l.add(new Key(new BigInteger("a28429", 16))); 
 		l.add(new Key(new BigInteger("128429", 16))); 
@@ -28,6 +80,14 @@ public class Main {
 		b = FileBinomiale.Ajout(b, new Key(new BigInteger("54438429", 16)));
 		b=b.SupprMin();
 		System.out.println(b);
+		
+		
 		System.out.println(FileBinomiale.Union(a, b));
+		
+		System.out.println(new Key(new BigInteger("528429", 16)));*/
+		
+		
+		String fff = new BigInteger("528429", 10).toString(16);
+		
 	}
 }

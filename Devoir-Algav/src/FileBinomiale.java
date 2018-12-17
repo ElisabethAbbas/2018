@@ -49,15 +49,16 @@ public class FileBinomiale {
 	}
 
 	public FileBinomiale Reste() {
-		FileBinomiale f = new FileBinomiale(this);
-		f.tournois.remove(0);
-		return f;
+		//FileBinomiale f = new FileBinomiale(this);
+		this.tournois.remove(0);
+		return this;
 	}
 
 	public FileBinomiale AjoutMin(TournoiBinomial t) {
-		FileBinomiale res =new FileBinomiale(this);
-		res.tournois.add(0, t);
-		return res;
+		/*FileBinomiale res =new FileBinomiale(this);
+		res.tournois.add(0, t);*/
+		this.tournois.add(0, t);
+		return this;
 	}
 
 	public static FileBinomiale Union(FileBinomiale F1, FileBinomiale F2) {
@@ -127,17 +128,9 @@ public class FileBinomiale {
 	}
 
 	public static FileBinomiale consIter(ArrayList<Key> elements) {
-		long startTime = System.nanoTime(); 
 		FileBinomiale f = new FileBinomiale();
 		for(Key k : elements)
 			f = Ajout(f, k);
-		
-		long endTime = System.nanoTime(); 
-
-		System.out.println("temps d'execution: " + (endTime - startTime) + " NanoSecond"); 
-		System.out.println("temps d'execution en moy: " + ((endTime - startTime)/elements.size()) + " NanoSecond");
-		System.out.println("temps d'execution en moy: " + (((endTime - startTime)/elements.size())/1000000) + " ms");
-		
 		return f;
 	}
 

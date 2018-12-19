@@ -1,4 +1,3 @@
-import java.math.BigInteger;
 import java.util.ArrayList;
 
 public class Main {
@@ -18,45 +17,56 @@ public class Main {
 		}*/
 		
 		String pathKeyFile=System.getProperty("user.dir")+"\\"+"cles_alea"+"\\";
-		String pathKeyFile1 = pathKeyFile+ "jeu_1_nb_cles_5000.txt";
-		String pathKeyFile2 =pathKeyFile+ "jeu_2_nb_cles_5000.txt";
-		//String pathKeyFile3 =pathKeyFile+ "\\test.txt";
-
+		String pathKeyFile1 = pathKeyFile+ "jeu_1_nb_cles_100.txt";
+		String pathKeyFile2 = pathKeyFile+ "jeu_2_nb_cles_100.txt";
+		
 		ArrayList<Key> keys;		
 		ArrayList<Key> keys2;
-		ArrayList<Key> keys3;
 		
 		try {
-			keys=Key.getKeysFromFile(pathKeyFile1);
-			keys2=Key.getKeysFromFile(pathKeyFile2);
-			//keys3=Key.getKeysFromFile(pathKeyFile3);
-			
-			/*FileBinomiale f = FileBinomiale.consIter(keys);
-			FileBinomiale g = FileBinomiale.consIter(keys2);
-			FileBinomiale h = FileBinomiale.consIter(keys3);*/
-			
-			TasMinArbreBinaire fa;// = ArbreBinaire.consIter(keys);
-			/*ArbreBinaire ga = ArbreBinaire.consIter(keys2);
-			ArbreBinaire ha = ArbreBinaire.consIter(keys3);*/
-			
-			
+			keys=Key.getHexaKeysFromFile(pathKeyFile1);
+			keys2=Key.getHexaKeysFromFile(pathKeyFile2);
 			double res = 0;
-			
-			/*for(double i=0; i<100; i++) {
-				res=res*i/(i+1);
-				res += ComplexiteArbreBinaire.union(TasMinArbreBinaire.consIter(keys), TasMinArbreBinaire.consIter(keys2))/(i+1);
-			}
-			
-			System.out.println(res/1000000);
-			*/
-			System.out.println(TasMinArbreBinaire.consIter(keys));
-			
-			//System.out.println(FileBinomiale.consIter(keys).toString());
-			
-			/*System.out.println(ComplexiteFileBinomiale.consIter(keys3)/1000000);
-			System.out.println(ComplexiteFileBinomiale.consIter(keys3)/1000000);
-			System.out.println(ComplexiteFileBinomiale.consIter(keys3)/1000000);*/
+			//String[] nb_cles = {"100", "1000", "10000", "200", "20000", "500", "5000", "50000"};
+			pathKeyFile=System.getProperty("user.dir")+"\\"+"cles_alea"+"\\";
+			//int k=0;
 
+			String n=args[0];
+			String f1=args[1];
+			String f2=args[2];
+			
+			if(args[1].equals(args[2]))
+				return;
+			
+			pathKeyFile1 = pathKeyFile+ "jeu_"+f1+"_nb_cles_"+n+".txt";
+			pathKeyFile2 = pathKeyFile+ "jeu_"+f2+"_nb_cles_"+n+".txt";
+			keys=Key.getHexaKeysFromFile(pathKeyFile1);
+			keys2=Key.getHexaKeysFromFile(pathKeyFile2);
+				
+	
+			//res = ComplexiteTasMinArbreBinaire.Union(TasMinArbreBinaire.consIter(keys), TasMinArbreBinaire.consIter(keys2));
+
+			
+			res = ComplexiteTasMinArbreBinaire.consIter(keys);
+
+			System.out.print((res/1000000)+",");
+			
+			
+			//System.out.println(new Key(new String("bla")).equals(new Key((new String("bla")))));
+			//System.out.println(res/1000000);
+			//TasMinArbreBinaire r=TasMinArbreBinaire.Union(TasMinArbreBinaire.consIter(keys), TasMinArbreBinaire.consIter(keys2));
+			//System.out.println(r);
+			/*System.out.println(r.getLeftChild().getLeftChild().getKey().getValueAscii());
+			System.out.println(r.getLeftChild().getLeftChild().getLeftChild().getKey().getValueAscii());
+			System.out.println(r.getLeftChild().getLeftChild().getKey().equals(r.getLeftChild().getLeftChild().getLeftChild().getKey()));
+			*/
+			//HashSet<Key> h = new HashSet<Key>();
+			
+			//h.add(r.getLeftChild().getLeftChild().getKey());
+			
+			
+			//System.out.println(TasMinArbreBinaire.consIter(keys));
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -101,9 +111,6 @@ public class Main {
 		System.out.println(FileBinomiale.Union(a, b));
 		
 		System.out.println(new Key(new BigInteger("528429", 16)));*/
-		
-		
-		String fff = new BigInteger("528429", 10).toString(16);
 		
 	}
 }

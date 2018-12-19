@@ -79,7 +79,7 @@ public class TournoiBinomial {
 	
 	@Override
 	public String toString() {
-		String s = "clé="+cle.getKey().toString(16)+" ";
+		String s = "clé="+cle.getValueHexa().toString(16)+" ";
 		for(TournoiBinomial t : fils)
 			s+=t.toString();
 		
